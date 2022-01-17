@@ -31,7 +31,9 @@ func checkUri_All(uri string, ref string, userAgent string) (int, error) {
 	return resp.StatusCode, nil
 }
 
-func CheckStatus(uri string, jndiString string) {
+func CheckStatus(uri string, jndiString string) (total int, err int){
+	count := 0;
+	error := 0
 	util.Status200Logger.Printf(`Input get from file: %s`,jndiString)
 
 	finalUri := uri + "/" + jndiString
@@ -41,8 +43,9 @@ func CheckStatus(uri string, jndiString string) {
 	if status, err := checkUri_All(finalUri, "", ""); err != nil {
 		fmt.Println(err.Error())
 	} else {
+		count = count + 1;
 		fmt.Printf(
-			`--------input---------
+`--------input---------
  case: only uri
  uri : %s
  referer: %s
@@ -52,14 +55,17 @@ func CheckStatus(uri string, jndiString string) {
  
 `, finalUri, "", "", status)
 		if status != 403 {
+			error = error + 1
 			util.Status200Logger.Printf(
-				`--------input---------
+`--------input---------
+
  case: only uri
  uri : %s
  referer: %s
  userAgent: %s
 --------output---------
  statusCode: %d
+ Error!!!
 
 `, finalUri, "", "", status)
 		}
@@ -69,8 +75,9 @@ func CheckStatus(uri string, jndiString string) {
 	if status, err := checkUri_All(finalUri, "", ""); err != nil {
 		fmt.Println(err.Error())
 	} else {
+		count = count + 1;
 		fmt.Printf(
-			`--------input---------
+`--------input---------
  case: param
  uri : %s
  referer: %s
@@ -80,14 +87,17 @@ func CheckStatus(uri string, jndiString string) {
 
 `, finalUri, "", "", status)
 		if status != 403 {
+			error = error + 1
 			util.Status200Logger.Printf(
-				`--------input---------
+`--------input---------
+
  case: param
  uri : %s
  referer: %s
  userAgent: %s
 --------output---------
  statusCode: %d
+ Error!!!
 
 `, finalUri, "", "", status)
 		}
@@ -97,8 +107,9 @@ func CheckStatus(uri string, jndiString string) {
 	if status, err := checkUri_All(finalUri, ref, ""); err != nil {
 		fmt.Println(err.Error())
 	} else {
+		count = count + 1;
 		fmt.Printf(
-			`--------input--------
+`--------input--------
  case: ref
  uri : %s
  referer: %s
@@ -108,14 +119,17 @@ func CheckStatus(uri string, jndiString string) {
 
 `, finalUri, ref, "", status)
 		if status != 403 {
+			error = error + 1
 			util.Status200Logger.Printf(
-				`--------input---------
+`--------input---------
+
  case: ref
  uri : %s
  referer: %s
  userAgent: %s
 --------output---------
  statusCode: %d
+ Error!!!
 
 `, finalUri, ref, "", status)
 		}
@@ -125,8 +139,9 @@ func CheckStatus(uri string, jndiString string) {
 	if status, err := checkUri_All(finalUri, "", userAgent); err != nil {
 		fmt.Println(err.Error())
 	} else {
+		count = count + 1;
 		fmt.Printf(
-			`--------input---------
+`--------input---------
  case: userAgent
  uri : %s
  referer: %s
@@ -137,17 +152,39 @@ func CheckStatus(uri string, jndiString string) {
 `, finalUri, "", userAgent, status)
 
 		if status != 403 {
+			error = error + 1
 			util.Status200Logger.Printf(
-				`--------input---------
+`--------input---------
+
  case: userAgent
  uri : %s
  referer: %s
  userAgent: %s
  --------output---------
  statusCode: %d
+ Error!!!
 
 		`, finalUri, "", userAgent, status)
 		}
 	}
 
+	// log total error
+	fmt.Printf(
+`--------result---------
+Error: %d
+Successful: %d
+Total: %d
+
+`, error, (count - error), count)
+
+util.Status200Logger.Printf(
+`--------result---------
+Error: %d
+Successful: %d
+Total: %d
+
+`, error, (count - error), count)
+
+return count, error
 }
+

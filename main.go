@@ -6,6 +6,8 @@ import (
 	check "validCheck/checkStatus"
 	fHandle "validCheck/fileHandle"
 	"validCheck/util"
+	"fmt"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -24,8 +26,36 @@ func main() {
 		log.Panicln("Cannot download file, problem is: ", err.Error())
 	}
 	fHandle.ReadFile("file/tempFile.txt", &arrayString)
-	for _, jndi := range arrayString {
-		check.CheckStatus(uri, jndi)
-	}
+	dt := time.Now().UTC().Format("2006-01-02 15:04:05")
+	totalCase := 0
+	errorCase := 0
 
+	fmt.Printf(
+	`********Start*********Time: %s
+	`, dt)
+	
+	util.Status200Logger.Printf(
+	`********Start*********Time: %s
+	`, dt)
+	
+	for _, jndi := range arrayString {
+		total, err :=check.CheckStatus(uri, jndi)
+		totalCase = totalCase + total
+		errorCase = errorCase + err
+	}
+	fmt.Printf(
+	`********Final Result*********
+	Error: %d
+	Successful: %d
+	Total: %d
+	
+	`, errorCase, (totalCase - errorCase), totalCase)
+	
+	util.Status200Logger.Printf(
+	`********Final Result*********
+	Error: %d
+	Successful: %d
+	Total: %d
+	
+	`, errorCase, (totalCase - errorCase), totalCase)
 }

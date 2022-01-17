@@ -11,7 +11,7 @@ var (
 )
 
 func Init() {
-	fileStatus200, err := os.OpenFile("status200.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	fileStatus200, err := os.OpenFile("result.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		log.Fatal(err)
 	}
